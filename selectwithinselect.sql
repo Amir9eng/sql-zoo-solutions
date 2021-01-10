@@ -194,3 +194,128 @@ Vatican City	0%
 
 
 
+
+
+Bigger than every country in Europe
+6.
+Which countries have a GDP greater than every country in Europe? [Give the name only.] (Some countries may have NULL gdp values)
+
+SELECT name FROM world 
+  WHERE gdp > ALL(SELECT gdp FROM world 
+                     WHERE continent = 'Europe' AND gdp>0)
+ 
+
+
+Correct answer
+name
+China
+Japan
+United States
+
+
+
+Largest in each continent
+7.
+Find the largest country (by area) in each continent, show the continent, the name and the area:
+
+SELECT continent, name, area FROM world x
+  WHERE area >= ALL
+    (SELECT area FROM world y
+        WHERE y.continent=x.continent
+          AND area>0)
+
+
+
+
+Correct answer
+continent	name	area
+Africa	Algeria	2381741
+Oceania	Australia	7692024
+South America	Brazil	8515767
+North America	Canada	9984670
+Asia	China	9596961
+Caribbean	Cuba	109884
+Europe	Kazakhstan	2724900
+Eurasia	Russia	17125242
+
+
+
+
+
+First country of each continent (alphabetically)
+8.
+List each continent and the name of the country that comes first alphabetically.
+
+SELECT continent, name
+  FROM world x
+  WHERE name <= ALL(SELECT name FROM world y 
+  	                WHERE y.continent = x.continent)
+
+
+
+
+Correct answer
+continent	name
+Africa	Algeria
+Asia	Afghanistan
+Caribbean	Antigua and Barbuda
+Eurasia	Armenia
+Europe	Albania
+North America	Belize
+Oceania	Australia
+South America	Argentina
+
+
+
+
+
+Difficult Questions That Utilize Techniques Not Covered In Prior Sections
+9.
+Find the continents where all countries have a population <= 25000000. Then find the names of the countries associated with these continents. Show name, continent and population.
+
+SELECT name, continent, population FROM world x
+WHERE 25000000 >= ALL(SELECT population FROM world y 
+                      WHERE y.continent = x.continent
+                      AND population > 0)  
+
+
+
+
+
+Correct answer
+name	continent	population
+Antigua and Barbuda	Caribbean	96453
+Bahamas	Caribbean	385340
+Barbados	Caribbean	287025
+Cuba	Caribbean	11209628
+Dominica	Caribbean	71808
+Dominican Republic	Caribbean	10358320
+Grenada	Caribbean	112003
+Haiti	Caribbean	11577779
+Jamaica	Caribbean	2726667
+Saint Lucia	Caribbean	178696
+Trinidad and Tobago	Caribbean	1363985
+
+
+
+
+
+
+
+10.
+Some countries have populations more than three times that of any of their neighbours (in the same continent). Give the countries and continents.
+
+SELECT name, continent 
+  FROM world x
+  WHERE population > ALL(SELECT population*3 FROM world y
+                        WHERE y.continent = x.continent
+                        AND population > 0
+                        AND y.name != x.name)
+
+
+
+
+Correct answer
+name	continent
+Brazil	South America
+Russia	Eurasia
